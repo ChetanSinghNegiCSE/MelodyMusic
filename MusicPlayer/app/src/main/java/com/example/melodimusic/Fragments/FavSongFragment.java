@@ -1,5 +1,6 @@
 package com.example.melodimusic.Fragments;
 
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.content.DialogInterface;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -90,7 +92,7 @@ public class FavSongFragment extends ListFragment {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(), "Remove Items", Toast.LENGTH_SHORT).show();
+                showDialog(songsList.get(position).getPath());
                 return true;
             }
         });
@@ -100,6 +102,27 @@ public class FavSongFragment extends ListFragment {
         public void onDataPass(String name, String path);
 
         public void fullSongList(ArrayList<SongsList> songList, int position);
+    }
+    private void showDialog(final String index){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(getString(R.string.delete))
+                .setMessage(getString(R.string.delete_text))
+                .setCancelable(true)
+                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        favoritesOperations.removeSong(index);
+                    }
+                });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
 }
