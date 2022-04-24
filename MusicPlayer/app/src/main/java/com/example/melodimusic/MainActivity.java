@@ -31,6 +31,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.example.melodimusic.Adapter.ViewPagerAdapter;
 import com.example.melodimusic.DB.FavoritesOperations;
 import com.example.melodimusic.Fragments.AllSongFragment;
+import com.example.melodimusic.Fragments.CurrentSongFragment;
 import com.example.melodimusic.Fragments.FavSongFragment;
 import com.example.melodimusic.Model.SongsList;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -43,22 +44,26 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, AllSongFragment.createDataParse , FavSongFragment.createDataParsed {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, AllSongFragment.createDataParse , FavSongFragment.createDataParsed, CurrentSongFragment.createDataParsed {
     private DrawerLayout mDrawerLayout;
     private ImageButton imgBtnPlayPause, imgbtnReplay, imgBtnPrev, imgBtnNext,imgBtnSetting;
     private FloatingActionButton refreshSongs;
+    private Menu menu;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private SeekBar seekbarController;
+    private String searchText = "";
+    private SongsList currSong;
+
 
     private TextView tvCurrentTime, tvTotalTime;
 
     private ArrayList<SongsList> songList;
     private int currentPosition;
-    private boolean checkFlag = false, repeatFlag = false ,  playContinueFlag = false , favFlag = true;
+    private boolean checkFlag = false, repeatFlag = false ,  playContinueFlag = false , favFlag = true,playlistFlag = false;
     private final int MY_PERMISSION_REQUEST = 100;
-
+    private int allSongLength;
 
     MediaPlayer mediaPlayer;
     Handler handler;
@@ -245,6 +250,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         public boolean onCreateOptionsMenu (Menu menu){
+            this.menu = menu;
             getMenuInflater().inflate(R.menu.action_bar_menu, menu);
             return super.onCreateOptionsMenu(menu);
         }
@@ -259,27 +265,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show();
                     return true;
                 case R.id.menu_favorites:
-                    if (mediaPlayer != null) {
-                        if (favFlag) {
-                            Toast.makeText(this, "Added to Favorites", Toast.LENGTH_SHORT).show();
-                            item.setIcon(R.drawable.ic_favorite_filled);
-                            SongsList favList = new SongsList(songList.get(currentPosition).getTitle(),
-                                    songList.get(currentPosition).getSubTitle(), songList.get(currentPosition).getPath());
-                            FavoritesOperations favoritesOperations = new FavoritesOperations(this);
-                            favoritesOperations.addSongFav(favList);
-                            favFlag = false;
-                        } else {
-                            Toast.makeText(this, "Removed to from", Toast.LENGTH_SHORT).show();
-                            item.setIcon(R.drawable.favorite_icon);
-                            favFlag = true;
+                    if (checkFlag)
+                        if (mediaPlayer != null) {
+                            if (favFlag) {
+                                Toast.makeText(this, "Added to Favorites", Toast.LENGTH_SHORT).show();
+                                item.setIcon(R.drawable.ic_favorite_filled);
+                                SongsList favList = new SongsList(songList.get(currentPosition).getTitle(),
+                                        songList.get(currentPosition).getSubTitle(), songList.get(currentPosition).getPath());
+                                FavoritesOperations favoritesOperations = new FavoritesOperations(this);
+                                favoritesOperations.addSongFav(favList);
+                                setPagerLayout();
+                                favFlag = false;
+                            } else {
+                                item.setIcon(R.drawable.favorite_icon);
+                                favFlag = true;
+                            }
                         }
-                    }
                     return true;
             }
 
-            return super.
-
-                    onOptionsItemSelected(item);
+            return super.onOptionsItemSelected(item);
         }
 
 
@@ -366,8 +371,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void attachMusic(String name, String path) {
         imgBtnPlayPause.setImageResource(R.drawable.play_icon);
         setTitle(name);
-        mediaPlayer.reset();
+        menu.getItem(1).setIcon(R.drawable.favorite_icon);
+        favFlag = true;
         try {
+            mediaPlayer.reset();
             mediaPlayer.setDataSource(path);
             mediaPlayer.prepare();
             setControls();
@@ -431,19 +438,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * Function to play the song using a thread
      */
     private void playCycle() {
-        seekbarController.setProgress(mediaPlayer.getCurrentPosition());
-        tvCurrentTime.setText(getTimeFormatted(mediaPlayer.getCurrentPosition()));
+        try {
+            seekbarController.setProgress(mediaPlayer.getCurrentPosition());
+            tvCurrentTime.setText(getTimeFormatted(mediaPlayer.getCurrentPosition()));
+            if (mediaPlayer.isPlaying()) {
+                runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        playCycle();
 
-        if (mediaPlayer.isPlaying()) {
-            runnable = new Runnable() {
-                @Override
-                public void run() {
-                    seekbarController.setProgress(mediaPlayer.getCurrentPosition());
-                    playCycle();
 
-                }
-            };
-            handler.postDelayed(runnable, 100);
+                    }
+                };
+                handler.postDelayed(runnable, 100);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     private String getTimeFormatted(long milliSeconds) {
@@ -485,9 +495,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    public void getLength(int length) {
+        this.allSongLength = length;
+    }
+
+
+    @Override
     public void fullSongList(ArrayList<SongsList> songList, int position) {
         this.songList = songList;
         this.currentPosition = position;
+        this.playlistFlag = songList.size() == allSongLength;
+    }
+
+    @Override
+    public String queryText() {
+        return searchText.toLowerCase();
+    }
+
+    @Override
+    public SongsList getSong() {
+        currentPosition = -1;
+        return currSong;
+    }
+
+    @Override
+    public boolean getPlaylistFlag() {
+        return playlistFlag;
+    }
+
+    @Override
+    public void currentSong(SongsList songsList) {
+        this.currSong = songsList;
+    }
+
+    @Override
+    public int getPosition() {
+        return currentPosition;
     }
 
 

@@ -1,7 +1,5 @@
 package com.example.melodimusic.Fragments;
 
-import android.app.AlertDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,8 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
-import android.content.DialogInterface;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,31 +14,24 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.ListFragment;
 
 import com.example.melodimusic.Adapter.SongAdapter;
-import com.example.melodimusic.DB.FavoritesOperations;
 import com.example.melodimusic.Model.SongsList;
 import com.example.melodimusic.R;
 
 import java.util.ArrayList;
 
-public class FavSongFragment extends ListFragment {
+public class CurrentSongFragment extends ListFragment {
 
-    private FavoritesOperations favoritesOperations;
-
-
-
-    public ArrayList<SongsList> songsList;
+    public ArrayList<SongsList> songsList = new ArrayList<>();
 
     private ListView listView;
 
     private createDataParsed createDataParsed;
 
-
     public static Fragment getInstance(int position) {
         Bundle bundle = new Bundle();
         bundle.putInt("pos", position);
-        FavSongFragment tabFragment = new FavSongFragment();
+        CurrentSongFragment tabFragment = new CurrentSongFragment();
         tabFragment.setArguments(bundle);
-
         return tabFragment;
     }
 
@@ -56,7 +45,6 @@ public class FavSongFragment extends ListFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         createDataParsed = (createDataParsed) context;
-        favoritesOperations = new FavoritesOperations(context);
     }
 
     @Override
@@ -67,7 +55,7 @@ public class FavSongFragment extends ListFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         listView = view.findViewById(R.id.list_playlist);
-
+        //songsList = new ArrayList<>();
         setContent();
     }
 
@@ -75,11 +63,18 @@ public class FavSongFragment extends ListFragment {
      * Setting the content in the listView and sending the data to the Activity
      */
     public void setContent() {
-        songsList = new ArrayList<>();
-        songsList = favoritesOperations.getAllFavorites();
-        SongAdapter adapter = new SongAdapter(getContext(), songsList);
-        listView.setAdapter(adapter);
+        if (createDataParsed.getSong() != null)
+            songsList.add(createDataParsed.getSong());
 
+        SongAdapter adapter = new SongAdapter(getContext(), songsList);
+
+        if (songsList.size() > 1)
+            if (createDataParsed.getPlaylistFlag()) {
+                songsList.clear();
+            }
+
+        listView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -88,51 +83,24 @@ public class FavSongFragment extends ListFragment {
                 createDataParsed.fullSongList(songsList, position);
             }
         });
-
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                deleteOption(position);
+
                 return true;
             }
         });
-    }
-
-    private void deleteOption(int position) {
-        if (position != createDataParsed.getPosition())
-            showDialog(songsList.get(position).getPath(), position);
-        else
-            Toast.makeText(getContext(), "You Can't delete the Current Song", Toast.LENGTH_SHORT).show();
     }
 
     public interface createDataParsed {
         public void onDataPass(String name, String path);
 
         public void fullSongList(ArrayList<SongsList> songList, int position);
-        public int getPosition();
-    }
-    private void showDialog(final String index ,  final int position){
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle(getString(R.string.delete))
-                .setMessage(getString(R.string.delete_text))
-                .setCancelable(true)
-                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+        public SongsList getSong();
 
-                    }
-                })
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        favoritesOperations.removeSong(index);
-                        createDataParsed.fullSongList(songsList, position);
-                        setContent();
-                    }
-                });
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+        public boolean getPlaylistFlag();
     }
+
 
 }
