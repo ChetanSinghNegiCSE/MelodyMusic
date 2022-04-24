@@ -7,7 +7,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.example.melodimusic.Fragments.TabFragment;
+import com.example.melodimusic.Fragments.AllSongFragment;
+import com.example.melodimusic.Fragments.FavSongFragment;
+
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
     private ContentResolver contentResolver;
@@ -20,7 +22,14 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return TabFragment.getInstance(position,contentResolver);
+        switch (position) {
+            case 0:
+                return AllSongFragment.getInstance(position, contentResolver);
+            case 1:
+                return FavSongFragment.getInstance(position, contentResolver);
+            default:
+                return null;
+        }
     }
 
     @Override

@@ -14,7 +14,7 @@ public class SongsList {
         this.path = path;
     }
 
-    public SongsList(String title, String subTitle) {
+    public SongsList(String string, String title, String subTitle) {
         this.title = title;
         this.subTitle = subTitle;
     }
@@ -31,7 +31,5 @@ public class SongsList {
         return subTitle;
     }
 
-    public void setSubTitle(String subTitle) {
-        this.subTitle = subTitle;
-    }
+
 }

@@ -29,7 +29,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.melodimusic.Adapter.ViewPagerAdapter;
-import com.example.melodimusic.Fragments.TabFragment;
+import com.example.melodimusic.DB.FavoritesOperations;
+import com.example.melodimusic.Fragments.AllSongFragment;
+import com.example.melodimusic.Fragments.FavSongFragment;
 import com.example.melodimusic.Model.SongsList;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -41,7 +43,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, TabFragment.createDataParse {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, AllSongFragment.createDataParse , FavSongFragment.createDataParsed {
     private DrawerLayout mDrawerLayout;
     private ImageButton imgBtnPlayPause, imgbtnReplay, imgBtnPrev, imgBtnNext,imgBtnSetting;
     private FloatingActionButton refreshSongs;
@@ -187,7 +189,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void setPagerLayout() {
             ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager(), getContentResolver());
             viewPager.setAdapter(adapter);
-            viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+            viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                }
+
+                @Override
+                public void onPageSelected(int position) {
+
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+
+                }
+            });
 
             tabLayout = findViewById(R.id.tabs);
             tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
@@ -242,14 +259,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show();
                     return true;
                 case R.id.menu_favorites:
-                    if (favFlag) {
-                        Toast.makeText(this, "Added to Favorites", Toast.LENGTH_SHORT).show();
-                        item.setIcon(R.drawable.ic_favorite_filled);
-                        favFlag = false;
-                    } else {
-                        Toast.makeText(this, "Removed to from", Toast.LENGTH_SHORT).show();
-                        item.setIcon(R.drawable.favorite_icon);
-                        favFlag = true;
+                    if (mediaPlayer != null) {
+                        if (favFlag) {
+                            Toast.makeText(this, "Added to Favorites", Toast.LENGTH_SHORT).show();
+                            item.setIcon(R.drawable.ic_favorite_filled);
+                            SongsList favList = new SongsList(songList.get(currentPosition).getTitle(), songList.get(currentPosition).getSubTitle(), songList.get(currentPosition).getPath());
+                            FavoritesOperations favoritesOperations = new FavoritesOperations(this);
+                            favoritesOperations.addSongFav(favList);
+                            favFlag = false;
+                        } else {
+                            Toast.makeText(this, "Removed to from", Toast.LENGTH_SHORT).show();
+                            item.setIcon(R.drawable.favorite_icon);
+                            favFlag = true;
+                        }
                     }
                     return true;
             }
@@ -258,6 +280,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     onOptionsItemSelected(item);
         }
+
 
     /**
      * Function to handle the click events.
