@@ -20,7 +20,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.ListFragment;
 
+import com.example.melodimusic.Adapter.SongAdapter;
+import com.example.melodimusic.Model.SongsList;
 import com.example.melodimusic.R;
+import com.example.melodimusic.Model.SongsList;
 
 import java.util.ArrayList;
 
@@ -28,12 +31,12 @@ import java.util.ArrayList;
 public class TabFragment extends ListFragment {
 
         private static ContentResolver contentResolver1;
-        public ArrayList<String> songsList;
+        public ArrayList<SongsList> songsList;
     public ArrayList<String> pathList;
     public ArrayList<String> nameList;
 
         private ListView listView;
-        private ArrayAdapter<String> adapter;
+        private SongAdapter adapter;
 
         private createDataParse createDataParse;
 
@@ -80,13 +83,14 @@ public class TabFragment extends ListFragment {
             pathList = new ArrayList<>();
             nameList = new ArrayList<>();
             getMusic();
-            adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, songsList);
+            adapter = new SongAdapter(getContext(), songsList);
             listView.setAdapter(adapter);
 
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     createDataParse.onDataPass(nameList.get(position), pathList.get(position));
+                    createDataParse.fullSongList(songsList, position);
                     //Toast.makeText(getContext(), "You clicked :\n"+songsList.get(position), Toast.LENGTH_SHORT).show();
                 }
             });
@@ -107,12 +111,13 @@ public class TabFragment extends ListFragment {
                 String currentLocation = songCursor.getString(songPath);
                 pathList.add(currentLocation);
                 nameList.add(currentTitle);
-                songsList.add(currentTitle + "\n" + currentArtist);
+                songsList.add(new SongsList(songCursor.getString(songTitle), songCursor.getString(songArtist)));
             } while (songCursor.moveToNext());
         }
     }
     public interface createDataParse {
         public void onDataPass(String name, String path);
+        public void fullSongList(ArrayList<SongsList> songList, int position);
     }
 
 }

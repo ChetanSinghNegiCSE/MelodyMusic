@@ -3,7 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/text_color"
-    android:gravity="center"
     android:padding="10dp">
 
     <ImageView
@@ -19,6 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_toEndOf="@id/iv_music_list"
+        android:singleLine="true"
         android:text="Title"
         android:textColor="@color/colorAccent"
         android:textSize="16sp"
@@ -32,6 +32,7 @@
         android:layout_marginStart="10dp"
         android:layout_toEndOf="@id/iv_music_list"
         android:text="SubTitle"
+        android:singleLine="true"
         android:textColor="@color/gray_color"
         android:textSize="12sp"
         android:textStyle="normal" />

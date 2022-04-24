@@ -30,18 +30,20 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.melodimusic.Adapter.ViewPagerAdapter;
 import com.example.melodimusic.Fragments.TabFragment;
+import com.example.melodimusic.Model.SongsList;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, TabFragment.createDataParse {
     private DrawerLayout mDrawerLayout;
-    private ImageButton imgBtnPlayPause;
+    private ImageButton imgBtnPlayPause, imgbtnReplay, imgBtnPrev, imgBtnNext;
     private FloatingActionButton refreshSongs;
 
     private TabLayout tabLayout;
@@ -50,7 +52,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private TextView tvCurrentTime, tvTotalTime;
 
-    private boolean checkFlag = false;
+    private ArrayList<SongsList> songList;
+    private int currentPosition;
+    private boolean checkFlag = false, repeatFlag = false;
     private final int MY_PERMISSION_REQUEST = 100;
 
 
@@ -73,6 +77,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
 
     private void init() {
+        imgBtnPrev = findViewById(R.id.img_btn_previous);
+        imgBtnNext = findViewById(R.id.img_btn_next);
+        imgbtnReplay = findViewById(R.id.img_btn_replay);
         tvCurrentTime = findViewById(R.id.tv_current_time);
         tvTotalTime = findViewById(R.id.tv_total_time);
         refreshSongs = findViewById(R.id.btn_refresh);
@@ -92,6 +99,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.menu_icon);
+
+        imgBtnNext.setOnClickListener(this);
+        imgBtnPrev.setOnClickListener(this);
+        imgbtnReplay.setOnClickListener(this);
 
         refreshSongs.setOnClickListener(this);
 
@@ -126,9 +137,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ActivityCompat.requestPermissions(MainActivity.this,
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSION_REQUEST);
 
-            } else {
-                Snackbar snackbar = Snackbar.make(mDrawerLayout, "Provide the StoragePermission", Snackbar.LENGTH_LONG);
-                snackbar.show();
+            }  else {
+                if (ContextCompat.checkSelfPermission(MainActivity.this,
+                        Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    Snackbar snackbar = Snackbar.make(mDrawerLayout, "Provide the Storage Permission", Snackbar.LENGTH_LONG);
+                    snackbar.show();
+                }
             }
 
 
@@ -221,7 +235,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             switch (item.getItemId()) {
                 case android.R.id.home:
                     mDrawerLayout.openDrawer(GravityCompat.START);
+                    return true;
+                case R.id.menu_search:
+                    Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show();
+                    return true;
+                case R.id.menu_favorites:
+                    Toast.makeText(this, "Added to Favorites", Toast.LENGTH_SHORT).show();
+                    return true;
             }
+
             return super.onOptionsItemSelected(item);
         }
 
@@ -248,6 +270,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
                 case R.id.btn_refresh:
                     Toast.makeText(this, "Refreshing", Toast.LENGTH_SHORT).show();
+                    setPagerLayout();
+                    break;
+                case R.id.img_btn_replay:
+                    if (repeatFlag) {
+                        Toast.makeText(this, "Looping Removed..", Toast.LENGTH_SHORT).show();
+                        mediaPlayer.setLooping(false);
+                        repeatFlag = false;
+                    } else {
+                        Toast.makeText(this, "Looping Added..", Toast.LENGTH_SHORT).show();
+                        mediaPlayer.setLooping(true);
+                        repeatFlag = true;
+                    }
+                    break;
+
+                case R.id.img_btn_previous:
+                    if (currentPosition - 1 > -1) {
+                        attachMusic(songList.get(currentPosition - 1).getTitle(), songList.get(currentPosition - 1).getPath());
+                        currentPosition = currentPosition - 1;
+                    } else {
+                        attachMusic(songList.get(currentPosition).getTitle(), songList.get(currentPosition).getPath());
+                    }
+                    break;
+                case R.id.img_btn_next:
+                    if (currentPosition + 1 < songList.size()) {
+                        attachMusic(songList.get(currentPosition + 1).getTitle(), songList.get(currentPosition + 1).getPath());
+                        currentPosition += 1;
+                    } else {
+                        Toast.makeText(this, "Playlist Ended", Toast.LENGTH_SHORT).show();
+                    }
                     break;
             }
         }
@@ -294,8 +345,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         checkFlag = true;
         if (mediaPlayer.isPlaying()) {
             imgBtnPlayPause.setImageResource(R.drawable.pause_icon);
-            tvTotalTime.setText(String.format(Locale.ENGLISH, "%d:%d", TimeUnit.MILLISECONDS.toMinutes((long) mediaPlayer.getDuration()),
-                    TimeUnit.MILLISECONDS.toSeconds((long) mediaPlayer.getDuration()) % 60));
+            tvTotalTime.setText(getTimeFormatted(mediaPlayer.getDuration()));
         }
 
         seekbarController.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -303,6 +353,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser) {
                     mediaPlayer.seekTo(progress);
+                    tvCurrentTime.setText(getTimeFormatted(progress));
                 }
             }
 
@@ -323,8 +374,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void playCycle() {
         seekbarController.setProgress(mediaPlayer.getCurrentPosition());
-        tvCurrentTime.setText(String.format(Locale.ENGLISH, "%d:%d", TimeUnit.MILLISECONDS.toMinutes((long) mediaPlayer.getCurrentPosition()),
-                TimeUnit.MILLISECONDS.toSeconds((long) mediaPlayer.getCurrentPosition()) % 60));
+        tvCurrentTime.setText(getTimeFormatted(mediaPlayer.getCurrentPosition()));
 
         if (mediaPlayer.isPlaying()) {
             runnable = new Runnable() {
@@ -338,6 +388,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             handler.postDelayed(runnable, 100);
         }
     }
+    private String getTimeFormatted(long milliSeconds) {
+        String finalTimerString = "";
+        String secondsString = "";
+
+        //Converting total duration into time
+        int hours = (int) (milliSeconds / 3600000);
+        int minutes = (int) (milliSeconds % 3600000) / 60000;
+        int seconds = (int) ((milliSeconds % 3600000) % 60000 / 1000);
+
+        // Adding hours if any
+        if (hours > 0)
+            finalTimerString = hours + ":";
+
+        // Prepending 0 to seconds if it is one digit
+        if (seconds < 10)
+            secondsString = "0" + seconds;
+        else
+            secondsString = "" + seconds;
+
+        finalTimerString = finalTimerString + minutes + ":" + secondsString;
+
+        // Return timer String;
+        return finalTimerString;
+    }
+
 
     /**
      * Function Overrided to receive the data from the fragment
@@ -349,6 +424,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onDataPass(String name, String path) {
         Toast.makeText(this, name, Toast.LENGTH_LONG).show();
         attachMusic(name, path);
+    }
+
+    @Override
+    public void fullSongList(ArrayList<SongsList> songList, int position) {
+        this.songList = songList;
+        this.currentPosition = position;
     }
 
 

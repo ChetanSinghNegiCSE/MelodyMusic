@@ -11,7 +11,10 @@
         android:layout_height="match_parent"
         android:padding="10dp"
         android:divider="@color/gray_color"
-        android:dividerHeight="1dp" />
+        android:dividerHeight="1dp"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"/>
 
 
 </LinearLayout>
