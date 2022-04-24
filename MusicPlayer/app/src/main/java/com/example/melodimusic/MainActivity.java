@@ -29,6 +29,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.melodimusic.Adapter.ViewPagerAdapter;
 import com.example.melodimusic.Fragments.TabFragment;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
@@ -37,11 +38,12 @@ import com.google.android.material.tabs.TabLayout;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, TabFragment.createDataParse {
     private DrawerLayout mDrawerLayout;
     private ImageButton imgBtnPlayPause;
+    private FloatingActionButton refreshSongs;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private SeekBar seekbarController;
-    private boolean countPlayPause = true;
+    private boolean checkFlag = false;
     private final int MY_PERMISSION_REQUEST = 100;
 
 
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void init() {
+        refreshSongs=findViewById(R.id.btn_refresh);
         seekbarController = findViewById(R.id.seekbar_controller);
         viewPager = findViewById(R.id.songs_viewpager);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -76,6 +79,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.menu_icon);
+
+        refreshSongs.setOnClickListener(this);
 
         imgBtnPlayPause.setOnClickListener(this);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -192,19 +197,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void onClick (View v){
             switch (v.getId()) {
                 case R.id.img_btn_play:
-                    if (countPlayPause) {
-                        imgBtnPlayPause.setImageResource(R.drawable.pause_icon);
-                        countPlayPause = false;
-                    } else {
-                        imgBtnPlayPause.setImageResource(R.drawable.play_icon);
-                        countPlayPause = true;
+                    if(checkFlag) {
+                        if (mediaPlayer.isPlaying()) {
+                            mediaPlayer.pause();
+                            imgBtnPlayPause.setImageResource(R.drawable.play_icon);
+                        } else if (!mediaPlayer.isPlaying()) {
+                            mediaPlayer.start();
+                            imgBtnPlayPause.setImageResource(R.drawable.pause_icon);
+                        }
+
                     }
+                    break;
+                case R.id.btn_refresh:
+                    Toast.makeText(this, "Refreshing", Toast.LENGTH_SHORT).show();
+                    break;
             }
-
-
         }
 
+
+
+
+
     private void attachMusic(String name, String path) {
+        imgBtnPlayPause.setImageResource(R.drawable.play_icon);
+        setTitle(name);
         mediaPlayer.reset();
         try {
             mediaPlayer.setDataSource(path);
@@ -213,6 +229,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } catch (Exception e) {
             e.printStackTrace();
         }
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                imgBtnPlayPause.setImageResource(R.drawable.play_icon);
+            }
+        });
     }
 
     private void setControls() {
@@ -220,6 +242,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         seekbarController.setMax(mediaPlayer.getDuration());
         playCycle();
         mediaPlayer.start();
+        checkFlag = true;
+        if (mediaPlayer.isPlaying()) {
+            imgBtnPlayPause.setImageResource(R.drawable.pause_icon);
+        }
 
         seekbarController.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -242,11 +268,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void playCycle() {
-        seekbarController.setProgress(mediaPlayer.getCurrentPosition());
+
         if (mediaPlayer.isPlaying()) {
             runnable = new Runnable() {
                 @Override
                 public void run() {
+                    seekbarController.setProgress(mediaPlayer.getCurrentPosition());
                     playCycle();
 
                 }
