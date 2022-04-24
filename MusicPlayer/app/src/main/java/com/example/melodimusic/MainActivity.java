@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, TabFragment.createDataParse {
     private DrawerLayout mDrawerLayout;
-    private ImageButton imgBtnPlayPause, imgbtnReplay, imgBtnPrev, imgBtnNext;
+    private ImageButton imgBtnPlayPause, imgbtnReplay, imgBtnPrev, imgBtnNext,imgBtnSetting;
     private FloatingActionButton refreshSongs;
 
     private TabLayout tabLayout;
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private ArrayList<SongsList> songList;
     private int currentPosition;
-    private boolean checkFlag = false, repeatFlag = false;
+    private boolean checkFlag = false, repeatFlag = false ,  playContinueFlag = false;
     private final int MY_PERMISSION_REQUEST = 100;
 
 
@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imgBtnPrev = findViewById(R.id.img_btn_previous);
         imgBtnNext = findViewById(R.id.img_btn_next);
         imgbtnReplay = findViewById(R.id.img_btn_replay);
+        imgBtnSetting = findViewById(R.id.img_btn_setting);
         tvCurrentTime = findViewById(R.id.tv_current_time);
         tvTotalTime = findViewById(R.id.tv_total_time);
         refreshSongs = findViewById(R.id.btn_refresh);
@@ -103,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imgBtnNext.setOnClickListener(this);
         imgBtnPrev.setOnClickListener(this);
         imgbtnReplay.setOnClickListener(this);
+        imgBtnSetting.setOnClickListener(this);
 
         refreshSongs.setOnClickListener(this);
 
@@ -300,6 +302,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Toast.makeText(this, "Playlist Ended", Toast.LENGTH_SHORT).show();
                     }
                     break;
+                case R.id.img_btn_setting:
+                    if (!playContinueFlag) {
+                        playContinueFlag = true;
+                        Toast.makeText(this, "Loop Added", Toast.LENGTH_SHORT).show();
+                    } else {
+                        playContinueFlag = false;
+                        Toast.makeText(this, "Loop Removed", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
             }
         }
 
@@ -328,6 +339,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onCompletion(MediaPlayer mp) {
                 imgBtnPlayPause.setImageResource(R.drawable.play_icon);
+                if (playContinueFlag) {
+                    if (currentPosition + 1 < songList.size()) {
+                        attachMusic(songList.get(currentPosition + 1).getTitle(), songList.get(currentPosition + 1).getPath());
+                        currentPosition += 1;
+                    } else {
+                        Toast.makeText(MainActivity.this, "PlayList Ended", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
     }
