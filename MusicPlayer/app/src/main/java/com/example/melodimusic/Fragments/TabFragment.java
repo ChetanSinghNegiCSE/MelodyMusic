@@ -36,8 +36,7 @@ public class TabFragment extends ListFragment {
         private ArrayAdapter<String> adapter;
 
         private createDataParse createDataParse;
-        private int position;
-        private TextView textView;
+
         private ContentResolver contentResolver;
 
         public static Fragment getInstance(int position, ContentResolver mcontentResolver) {
@@ -71,7 +70,7 @@ public class TabFragment extends ListFragment {
         public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
             //super.onViewCreated(view, savedInstanceState);
             listView = view.findViewById(R.id.list_playlist);
-            position = getArguments().getInt("pos");
+
             contentResolver = contentResolver1;
             setContent();
         }
