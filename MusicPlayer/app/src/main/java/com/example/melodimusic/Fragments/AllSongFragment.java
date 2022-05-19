@@ -1,40 +1,45 @@
 package com.example.melodimusic.Fragments;
 
-import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.ListFragment;
+
 
 import com.example.melodimusic.Adapter.SongAdapter;
-import com.example.melodimusic.DB.FavoritesDBHandler;
 import com.example.melodimusic.Model.SongsList;
 import com.example.melodimusic.R;
 
 import java.util.ArrayList;
 
-
 public class AllSongFragment extends ListFragment {
+
+
     private static ContentResolver contentResolver1;
+
     public ArrayList<SongsList> songsList;
     public ArrayList<SongsList> newList;
+
     private ListView listView;
+
     private createDataParse createDataParse;
     private ContentResolver contentResolver;
+
     public static Fragment getInstance(int position, ContentResolver mcontentResolver) {
         Bundle bundle = new Bundle();
         bundle.putInt("pos", position);
@@ -43,25 +48,31 @@ public class AllSongFragment extends ListFragment {
         contentResolver1 = mcontentResolver;
         return tabFragment;
     }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         createDataParse = (createDataParse) context;
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_tab, container, false);
     }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         listView = view.findViewById(R.id.list_playlist);
         contentResolver = contentResolver1;
         setContent();
     }
+
     /**
      * Setting the content in the listView and sending the data to the Activity
      */
@@ -89,7 +100,8 @@ public class AllSongFragment extends ListFragment {
                 if (!finalSearchedList) {
                     createDataParse.onDataPass(songsList.get(position).getTitle(), songsList.get(position).getPath());
                     createDataParse.fullSongList(songsList, position);
-                } else { createDataParse.onDataPass(newList.get(position).getTitle(), newList.get(position).getPath());
+                } else {
+                    createDataParse.onDataPass(newList.get(position).getTitle(), newList.get(position).getPath());
                     createDataParse.fullSongList(songsList, position);
                 }
             }
@@ -103,6 +115,8 @@ public class AllSongFragment extends ListFragment {
             }
         });
     }
+
+
     public void getMusic() {
         Uri songUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         Cursor songCursor = contentResolver.query(songUri, null, null, null, null);
@@ -110,12 +124,14 @@ public class AllSongFragment extends ListFragment {
             int songTitle = songCursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
             int songArtist = songCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
             int songPath = songCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
+
             do {
                 songsList.add(new SongsList(songCursor.getString(songTitle), songCursor.getString(songArtist), songCursor.getString(songPath)));
             } while (songCursor.moveToNext());
             songCursor.close();
         }
     }
+
     public SongAdapter onQueryTextChange() {
         String text = createDataParse.queryText();
         for (SongsList songs : songsList) {
@@ -127,8 +143,8 @@ public class AllSongFragment extends ListFragment {
         return new SongAdapter(getContext(), newList);
 
     }
-    private void showDialog(final int position) {
 
+    private void showDialog(final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage(getString(R.string.play_next))
                 .setCancelable(true)
@@ -148,6 +164,7 @@ public class AllSongFragment extends ListFragment {
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
+
     public interface createDataParse {
         public void onDataPass(String name, String path);
 
@@ -160,6 +177,4 @@ public class AllSongFragment extends ListFragment {
     }
 
 }
-
-
 

@@ -8,12 +8,14 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.melodimusic.Fragments.AllSongFragment;
+import com.example.melodimusic.Fragments.CurrentSongFragment;
 import com.example.melodimusic.Fragments.FavSongFragment;
 
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
+
     private ContentResolver contentResolver;
-    private String title[] = {"PLAYLIST", "FAVORITES"};
+    private String title[] = {"All SONGS","CURRENT PLAYLIST", "FAVORITES"};
 
     public ViewPagerAdapter(FragmentManager fm, ContentResolver contentResolver) {
         super(fm);
@@ -26,6 +28,8 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return AllSongFragment.getInstance(position, contentResolver);
             case 1:
+                return CurrentSongFragment.getInstance(position);
+            case 2:
                 return FavSongFragment.getInstance(position);
             default:
                 return null;

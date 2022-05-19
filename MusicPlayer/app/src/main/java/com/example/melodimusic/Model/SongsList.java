@@ -1,5 +1,6 @@
 package com.example.melodimusic.Model;
 
+
 public class SongsList {
 
     private String title;
@@ -14,9 +15,11 @@ public class SongsList {
         this.path = path;
     }
 
-    public SongsList(String string, String title, String subTitle) {
+    public SongsList(String title, String subTitle, String path) {
         this.title = title;
         this.subTitle = subTitle;
+        this.path = path;
+
     }
 
     public String getTitle() {
@@ -30,6 +33,5 @@ public class SongsList {
     public String getSubTitle() {
         return subTitle;
     }
-
 
 }
