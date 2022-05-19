@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="Gradle: android.arch.lifecycle:runtime:1.1.0@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/28dec0eab6aa8f36ed76c0c623ef8bb3/runtime-1.1.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/28dec0eab6aa8f36ed76c0c623ef8bb3/runtime-1.1.0/res" />
+      <root url="jar://$PROJECT_DIR$/../Android-Application-Development/Android Basics3 Multiscreen Apps/ud839_Miwok/caches/transforms-2/files-2.1/1f717b86d1c4780319a27508416a5090/runtime-1.1.0/jars/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/../Android-Application-Development/Android Basics3 Multiscreen Apps/ud839_Miwok/caches/transforms-2/files-2.1/1f717b86d1c4780319a27508416a5090/runtime-1.1.0/AndroidManifest.xml" />
+      <root url="file://$PROJECT_DIR$/../Android-Application-Development/Android Basics3 Multiscreen Apps/ud839_Miwok/caches/transforms-2/files-2.1/1f717b86d1c4780319a27508416a5090/runtime-1.1.0/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/android.arch.lifecycle/runtime/1.1.0/a4b0d6b8e8f51c8f95d5a0641f81ffc13ab406c7/runtime-1.1.0-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Android-Application-Development/Android Basics3 Multiscreen Apps/ud839_Miwok/caches/modules-2/files-2.1/android.arch.lifecycle/runtime/1.1.0/a4b0d6b8e8f51c8f95d5a0641f81ffc13ab406c7/runtime-1.1.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

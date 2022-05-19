@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="Gradle: com.android.support:support-vector-drawable:27.1.1@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3eb235d810830557057aa57f8980319b/support-vector-drawable-27.1.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3eb235d810830557057aa57f8980319b/support-vector-drawable-27.1.1/res" />
+      <root url="file://$PROJECT_DIR$/../Android-Application-Development/Android Basics3 Multiscreen Apps/ud839_Miwok/caches/transforms-2/files-2.1/f9427f5ddff2b215fb82bf2793594edb/support-vector-drawable-27.1.1/AndroidManifest.xml" />
+      <root url="file://$PROJECT_DIR$/../Android-Application-Development/Android Basics3 Multiscreen Apps/ud839_Miwok/caches/transforms-2/files-2.1/f9427f5ddff2b215fb82bf2793594edb/support-vector-drawable-27.1.1/res" />
+      <root url="jar://$PROJECT_DIR$/../Android-Application-Development/Android Basics3 Multiscreen Apps/ud839_Miwok/caches/transforms-2/files-2.1/f9427f5ddff2b215fb82bf2793594edb/support-vector-drawable-27.1.1/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.support/support-vector-drawable/27.1.1/4b29cf2106c95afb3432bb0c4ec5a91e959717b2/support-vector-drawable-27.1.1-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Android-Application-Development/Android Basics3 Multiscreen Apps/ud839_Miwok/caches/modules-2/files-2.1/com.android.support/support-vector-drawable/27.1.1/4b29cf2106c95afb3432bb0c4ec5a91e959717b2/support-vector-drawable-27.1.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

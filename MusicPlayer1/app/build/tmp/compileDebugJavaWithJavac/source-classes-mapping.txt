@@ -1,0 +1,41 @@
+com/example/soc_macmini_15/musicplayer/Fragments/AllSongFragment.java
+ com.example.soc_macmini_15.musicplayer.Fragments.AllSongFragment
+ com.example.soc_macmini_15.musicplayer.Fragments.AllSongFragment$1
+ com.example.soc_macmini_15.musicplayer.Fragments.AllSongFragment$2
+ com.example.soc_macmini_15.musicplayer.Fragments.AllSongFragment$3
+ com.example.soc_macmini_15.musicplayer.Fragments.AllSongFragment$4
+ com.example.soc_macmini_15.musicplayer.Fragments.AllSongFragment$createDataParse
+com/example/soc_macmini_15/musicplayer/BuildConfig.java
+ com.example.soc_macmini_15.musicplayer.BuildConfig
+com/example/soc_macmini_15/musicplayer/Model/SongsList.java
+ com.example.soc_macmini_15.musicplayer.Model.SongsList
+com/example/soc_macmini_15/musicplayer/DB/FavoritesDBHandler.java
+ com.example.soc_macmini_15.musicplayer.DB.FavoritesDBHandler
+com/example/soc_macmini_15/musicplayer/Activity/MainActivity.java
+ com.example.soc_macmini_15.musicplayer.Activity.MainActivity
+ com.example.soc_macmini_15.musicplayer.Activity.MainActivity$1
+ com.example.soc_macmini_15.musicplayer.Activity.MainActivity$2
+ com.example.soc_macmini_15.musicplayer.Activity.MainActivity$3
+ com.example.soc_macmini_15.musicplayer.Activity.MainActivity$4
+ com.example.soc_macmini_15.musicplayer.Activity.MainActivity$5
+ com.example.soc_macmini_15.musicplayer.Activity.MainActivity$6
+ com.example.soc_macmini_15.musicplayer.Activity.MainActivity$7
+ com.example.soc_macmini_15.musicplayer.Activity.MainActivity$8
+com/example/soc_macmini_15/musicplayer/DB/FavoritesOperations.java
+ com.example.soc_macmini_15.musicplayer.DB.FavoritesOperations
+com/example/soc_macmini_15/musicplayer/Adapter/SongAdapter.java
+ com.example.soc_macmini_15.musicplayer.Adapter.SongAdapter
+com/example/soc_macmini_15/musicplayer/Fragments/CurrentSongFragment.java
+ com.example.soc_macmini_15.musicplayer.Fragments.CurrentSongFragment
+ com.example.soc_macmini_15.musicplayer.Fragments.CurrentSongFragment$1
+ com.example.soc_macmini_15.musicplayer.Fragments.CurrentSongFragment$2
+ com.example.soc_macmini_15.musicplayer.Fragments.CurrentSongFragment$createDataParsed
+com/example/soc_macmini_15/musicplayer/Adapter/ViewPagerAdapter.java
+ com.example.soc_macmini_15.musicplayer.Adapter.ViewPagerAdapter
+com/example/soc_macmini_15/musicplayer/Fragments/FavSongFragment.java
+ com.example.soc_macmini_15.musicplayer.Fragments.FavSongFragment
+ com.example.soc_macmini_15.musicplayer.Fragments.FavSongFragment$1
+ com.example.soc_macmini_15.musicplayer.Fragments.FavSongFragment$2
+ com.example.soc_macmini_15.musicplayer.Fragments.FavSongFragment$3
+ com.example.soc_macmini_15.musicplayer.Fragments.FavSongFragment$4
+ com.example.soc_macmini_15.musicplayer.Fragments.FavSongFragment$createDataParsed
